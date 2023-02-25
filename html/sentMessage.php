@@ -1,4 +1,8 @@
 <?php
+if (isset($_SESSION['connect'])) {
+  header('location: login_as_an_influencer.php');
+  exit;
+}
 require("connexion.php");
 $requete = $db->prepare('SELECT count(*) as nbre_brands FROM brands ');
 $requete->execute();
@@ -6,10 +10,6 @@ while ($result = $requete->fetch()) {
   $nbre_brands = $result['nbre_brands'];
 }
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 

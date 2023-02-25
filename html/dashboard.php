@@ -2,12 +2,12 @@
 session_start();
 require("connexion.php");
 if (empty($_SESSION['connect'])) {
-  header('location: join_as_an_influencer.php');
+  header('location: login_as_an_influencer.php');
+  exit;
 }
 if (isset($_SESSION['id_influencer'])) {
   $id_influencer  = $_SESSION['id_influencer'];
 }
-
 $requete = $db->prepare('SELECT count(*) as count, (SELECT id FROM deals ) as last_id FROM deals');
 $requete->execute();
 while ($result = $requete->fetch()) {
@@ -16,8 +16,6 @@ while ($result = $requete->fetch()) {
 }
 
 ?>
-
-
 
 
 <!DOCTYPE html>

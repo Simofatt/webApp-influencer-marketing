@@ -8,7 +8,7 @@ if ($_SESSION['connect']) {
   $email              = $_SESSION['email'];
   $phone_number       = $_SESSION['phone_number'];
   $instagram_account  = $_SESSION['instagram_account'];
-} else if (empty($_SESSION['id_influencer'])) {
+} else if (!isset($_SESSION['connect'])) {
   header('location: login_as_an_influencer.php');
 }
 $requete  = $db->prepare('SELECT password FROM influencer where id = ?');
@@ -16,8 +16,8 @@ $requete->execute(array($id_influencer));
 while ($result = $requete->fetch()) {
   $password  = $result['password'];
 }
-if (!empty($_POST['submit'])) {
 
+if (!empty($_POST['submit'])) {
   if (!empty($_POST['full_name'])) {
     $full_name          = $_POST['full_name'];
     $requete = $db->prepare('UPDATE influencer SET full_name = ? WHERE id = ?');
@@ -25,8 +25,18 @@ if (!empty($_POST['submit'])) {
   }
   if (!empty($_POST['email'])) {
     $email              = $_POST['email'];
-    $requete = $db->prepare('UPDATE influencer SET email = ? WHERE id = ?');
-    $requete->execute(array($email, $id_influencer));
+    $stmt = $db->prepare("SELECT count(*) as number_email from influencer where  email=?  ");
+    $stmt->execute(array($email));
+
+    while ($result = $stmt->fetch()) {
+      if ($result['number_email'] != 0) {
+        header('Location: login_as_an_influencer.php?error=1');
+        exit();
+      } else {
+        $requete = $db->prepare('UPDATE influencer SET email = ? WHERE id = ?');
+        $requete->execute(array($email, $id_influencer));
+      }
+    }
   }
   if (!empty($_POST['phone_number'])) {
     $phone_number       = $_POST['phone_number'];
@@ -40,10 +50,17 @@ if (!empty($_POST['submit'])) {
   }
   if (!empty($_POST['password'])) {
     $password           = "aq1" . sha1($password . "1234") . "25";
-
     $requete = $db->prepare('UPDATE influencer SET password = ? WHERE id = ?');
     $requete->execute(array($password, $id_influencer));
   }
+
+
+
+  $_SESSION['full_name'] = $full_name;
+  $_SESSION['email'] = $email;
+  $_SESSION['phone_number'] = $phone_number;
+  $_SESSION['instagram_account'] = $instagram_account;
+
 
   header('location: profileSettings.php?success=1');
   exit();
@@ -170,19 +187,18 @@ if (!empty($_POST['submit'])) {
         <label for="file">Sélectionnez une image :</label>
         <input class="txt" type="file" id="file" name="file" accept="image/*">
       </div>
+      <?php
+      if (isset($_GET['error'])) { ?>
+        <div>
+          <p>Email Existe deja!</p>
+        </div>
+      <?php
+      }
+      ?>
       <div>
         <input type="submit" name="submit" value="Enregistrer">
       </div>
     </form>
-
-
-    <style>
-
-
-
-    </style>
-
-
 
     <script>
       function uploadImage() {

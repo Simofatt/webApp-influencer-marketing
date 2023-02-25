@@ -3,17 +3,15 @@ session_start();
 require("connexion.php");
 if (empty($_SESSION['connect'])) {
   header('location: login_as_an_influencer.php');
+  exit;
 }
-
 $requete = $db->prepare('SELECT count(*) as count , (SELECT id FROM message_brands ) as last_id FROM message_brands');
 $requete->execute();
 while ($result = $requete->fetch()) {
   $count = $result['count'];
   $nbre_messages = $result['last_id'];
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 

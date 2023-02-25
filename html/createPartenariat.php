@@ -1,7 +1,9 @@
 <?php
 require("connexion.php");
 
-
+if (isset($_SESSION['connect'])) {
+  header('location: login_as_an_influencer.php');
+}
 
 $requete = $db->prepare('SELECT count(*) as count, (SELECT id FROM brands ORDER BY id desc LIMIT 1) as last_id FROM brands');
 $requete->execute();

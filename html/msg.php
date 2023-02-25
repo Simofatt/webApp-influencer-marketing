@@ -1,21 +1,19 @@
 <?php
 session_start();
 require("connexion.php");
-
-
-if (empty($_SESSION['id_influencer'])) {
+if (empty($_SESSION['connect'])) {
   header('location: login_as_an_influencer.php');
+  exit;
 }
 if (isset($_SESSION['connect'])) {
   $id_influencer   = $_SESSION['id_influencer'];
 }
 if (!empty($_POST['subject']) && !empty($_POST['message']) && isset($_GET['id_brand'])) {
+  $id_brand        = $_GET['id_brand'];
+  $subject         = $_POST['subject'];
+  $message         = $_POST['message'];
 
-  $id_brand = $_GET['id_brand'];
-  $subject    = $_POST['subject'];
-  $message    = $_POST['message'];
-
-  $requete   = $db->prepare('INSERT INTO  message_influencer(id_influencer, id_brand, subject, message) VALUES (?,?,?,?)');
+  $requete         = $db->prepare('INSERT INTO  message_influencer(id_influencer, id_brand, subject, message) VALUES (?,?,?,?)');
   $requete->execute(array($id_influencer, $id_brand, $subject, $message));
   header('location: msg.php?success=1');
   exit();

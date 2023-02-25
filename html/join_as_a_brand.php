@@ -8,17 +8,13 @@ if (!empty($_POST['name_brand']) && !empty($_POST['email'])  && !empty($_POST['i
   $password           = $_POST['password'];
   $password_confirm   = $_POST['password_confirm'];
 
-
   if ($password != $password_confirm) {
     header('Location: join_as_a_brand.php?error=1&pass=1');
     exit();
   }
-
-
   //CHECK IF THE EMAIL IS ALREADY USED 
   $stmt = $db->prepare("SELECT count(*) AS number_email FROM brands WHERE email=?");
   $stmt->execute(array($email));
-
   while ($user = $stmt->fetch()) {
     if ($user['number_email'] != 0) {
       header('Location: join_as_a_brand.php?error=1&email=1');
@@ -28,8 +24,6 @@ if (!empty($_POST['name_brand']) && !empty($_POST['email'])  && !empty($_POST['i
 
   //HASH PSSWD 
   $password = "aq1" . sha1($password . "1234") . "25";    //aq1 et 1234 25 sont des grain de sels
-
-
 
   //HASH 
   $secret = sha1($email) . time();

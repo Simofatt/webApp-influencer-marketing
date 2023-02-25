@@ -2,19 +2,18 @@
 session_start();
 if (isset($_SESSION['connect'])) {
     header('location: dashboard.php?succes=1');
+    exit;
 }
 require("connexion.php");
 if (!empty($_POST['email']) && !empty($_POST['password'])) {
     $email    =  $_POST['email'];
     $password =  $_POST['password'];
     $error = 1;
-
     //HASH PASSWORD 
     $password = "aq1" . sha1($password . "1234") . "25";    //aq1 et 1234 25 sont des grain de sels
 
     $requete = $db->prepare("SELECT *  FROM brands WHERE email=? ");
     $requete->execute(array($email));
-
     while ($user = $requete->fetch()) {
         if ($password == $user['password']) {
             $error = 0;
@@ -27,7 +26,6 @@ if (!empty($_POST['email']) && !empty($_POST['password'])) {
             if (isset($_POST['connect'])) {
                 setcookie('connect', $user['secret'], time() + 365 * 24 * 3600, '/', null, false, true);
             }
-
             header('location: dashboard.php?succes=1');
             exit();
         }

@@ -1,13 +1,12 @@
 <?php
 session_start();
 require("connexion.php");
-if (empty($_SESSION['id_influencer'])) {
+if (empty($_SESSION['connect'])) {
   header('location: login_as_an_influencer.php');
 }
 if ($_SESSION['connect']) {
   $id_influencer  =  $_SESSION['id_influencer'];
 }
-
 if (!empty($_POST['montant']) && !empty($_POST['duree_contrat']) && !empty($_POST['date_expiration']) && isset($_GET['id_brand'])) {
 
   $montant          = $_POST['montant'];
@@ -15,16 +14,12 @@ if (!empty($_POST['montant']) && !empty($_POST['duree_contrat']) && !empty($_POS
   $date_expiration  = $_POST['date_expiration'];
   $id_brand         = $_GET['id_brand'];
 
-
   $requete  = $db->prepare('INSERT INTO create_deal_influencer(id_brand, id_influencer, montant, duree_contrat, date_expiration) VALUES (?,?,?,?,?)');
   $requete->execute(array($id_brand, $id_influencer, $montant, $duree_contat, $date_expiration));
-
   header('location: createDeal.php?success=1');
   exit();
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 

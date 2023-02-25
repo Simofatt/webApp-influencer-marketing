@@ -1,4 +1,5 @@
 <?php
+
 require("connexion.php");
 if (!empty($_POST['full_name']) && !empty($_POST['email']) && !empty($_POST['phone_number']) && !empty($_POST['instagram_account']) && !empty($_POST['password']) && !empty($_POST['password_confirm'])) {
   $full_name          = $_POST['full_name'];
@@ -12,28 +13,20 @@ if (!empty($_POST['full_name']) && !empty($_POST['email']) && !empty($_POST['pho
     header('Location: join_as_an_influencer.php?error=1&pass=1');
     exit();
   }
-
-
   //CHECK IF THE EMAIL IS ALREADY USED 
   $requete = $db->prepare("SELECT count(*) as number_email from influencer where  email=?  ");
   $requete->execute(array($email));
-
   while ($result = $requete->fetch()) {
     if ($result['number_email'] != 0) {
       header('Location: join_as_an_influencer.php?error=1&email=1');
       exit();
     }
   }
-
   //HASH PSSWD 
   $password = "aq1" . sha1($password . "1234") . "25";    //aq1 et 1234 25 sont des grain de sels
-
-
-
   //HASH 
   $secret = sha1($email) . time();
   $secret = sha1($secret) . time() . time();
-
   //SENT DATA
   $requete = $db->prepare('INSERT INTO influencer(full_name, email, phone_number, instagram_account, password, secret) VALUES(?,?,?,?,?,?)');
   $requete->execute(array($full_name, $email, $phone_number, $instagram_account, $password, $secret));
@@ -44,9 +37,6 @@ if (!empty($_POST['full_name']) && !empty($_POST['email']) && !empty($_POST['pho
 
 
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">

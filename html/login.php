@@ -2,6 +2,7 @@
 session_start();
 if (isset($_SESSION['connect'])) {
   header('location: dashboard.php?succes=1');
+  exit;
 }
 
 ?>
